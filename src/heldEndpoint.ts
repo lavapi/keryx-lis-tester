@@ -2,6 +2,7 @@ import { setTimeout as delay } from "node:timers/promises";
 
 import type { FastifyInstance } from "fastify";
 
+import { buildDereferenceContext } from "./dereferenceContext.js";
 import { buildLocationContext } from "./locationContext.js";
 import { pickLocation } from "./locationPicker.js";
 import { inspectHeldRequest } from "./requestInspector.js";
@@ -31,6 +32,11 @@ export const registerHeldEndpoint = (
       done(null, body);
     },
   );
+
+  app.get("/", async (_request, reply) => {
+    reply.header("allow", "POST").code(405);
+    return { error: "Method Not Allowed", allow: "POST" };
+  });
 
   app.post("/", async (request, reply) => {
     const query = (request.query ?? {}) as ScenarioQuery;
@@ -62,6 +68,7 @@ export const registerHeldEndpoint = (
     const rendered = applyTemplate(scenario.body, {
       timestamp: new Date().toISOString(),
       ...buildLocationContext(pickLocation()),
+      ...buildDereferenceContext(),
     });
     reply.code(scenario.status).type(scenario.contentType);
     return rendered;

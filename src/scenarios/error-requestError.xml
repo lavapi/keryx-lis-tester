@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<error xmlns="urn:ietf:params:xml:ns:geopriv:held" code="requestError">
+  <message xml:lang="en">The request was badly formed in some fashion.</message>
+</error>

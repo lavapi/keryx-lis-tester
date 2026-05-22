@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<error xmlns="urn:ietf:params:xml:ns:geopriv:held" code="generalLisError">
+  <message xml:lang="en">An unspecified error occurred at the LIS.</message>
+</error>

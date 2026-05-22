@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<locationResponse xmlns="urn:ietf:params:xml:ns:geopriv:held">
+  <presence xmlns="urn:ietf:params:xml:ns:pidf"
+            xmlns:gp="urn:ietf:params:xml:ns:pidf:geopriv10"
+            xmlns:gbp="urn:ietf:params:xml:ns:pidf:geopriv10:basicPolicy"
+            xmlns:gml="http://www.opengis.net/gml"
+            xmlns:gs="http://www.opengis.net/pidflo/1.0"
+            entity="pres:device@keryx-lis-tester">
+    <tuple id="t1">
+      <status>
+        <gp:geopriv>
+          <gp:location-info>
+            <gs:Prism srsName="urn:ogc:def:crs:EPSG::4979">
+              <gs:base>
+                <gml:Polygon>
+                  <gml:exterior>
+                    <gml:LinearRing>
+                      <gml:posList>{{polygonPosList}}</gml:posList>
+                    </gml:LinearRing>
+                  </gml:exterior>
+                </gml:Polygon>
+              </gs:base>
+              <gs:height uom="urn:ogc:def:uom:EPSG::9001">30</gs:height>
+            </gs:Prism>
+          </gp:location-info>
+          <gp:usage-rules>
+            <gbp:retransmission-allowed>no</gbp:retransmission-allowed>
+          </gp:usage-rules>
+          <gp:method>Manual</gp:method>
+        </gp:geopriv>
+      </status>
+      <timestamp>{{timestamp}}</timestamp>
+    </tuple>
+  </presence>
+</locationResponse>

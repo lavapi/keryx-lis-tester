@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<locationResponse xmlns="urn:ietf:params:xml:ns:geopriv:held">
+  <locationUriSet expires="{{locationExpires}}">
+    <locationURI>{{httpsLocationURI}}</locationURI>
+  </locationUriSet>
+</locationResponse>

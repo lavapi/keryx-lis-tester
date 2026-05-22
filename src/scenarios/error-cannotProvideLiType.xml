@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<error xmlns="urn:ietf:params:xml:ns:geopriv:held" code="cannotProvideLiType">
+  <message xml:lang="en">The LIS was unable to provide LI of the type or types requested.</message>
+</error>

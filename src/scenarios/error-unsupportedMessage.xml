@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<error xmlns="urn:ietf:params:xml:ns:geopriv:held" code="unsupportedMessage">
+  <message xml:lang="en">An element in the XML document for the request was not supported or understood by the LIS.</message>
+</error>

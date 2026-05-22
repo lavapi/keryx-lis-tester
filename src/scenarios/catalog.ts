@@ -41,6 +41,31 @@ export const catalog: ScenarioMeta[] = [
     description: "Dynamic California civic with extended fields (BLD, FLR, ROOM, PLC, NAM, LMK).",
   },
   {
+    id: "civic-with-directionals",
+    file: "civic-with-directionals.xml",
+    description: "Civic address with pre- and post-directionals (PRD, POD) — \"N Spring St SW\".",
+  },
+  {
+    id: "civic-with-hns",
+    file: "civic-with-hns.xml",
+    description: "Civic address with house number suffix (HNS) — \"1234B Market St\".",
+  },
+  {
+    id: "civic-with-pobox",
+    file: "civic-with-pobox.xml",
+    description: "Civic address using POBOX instead of street-level fields.",
+  },
+  {
+    id: "civic-with-loc-unit",
+    file: "civic-with-loc-unit.xml",
+    description: "Civic address with UNIT and free-text LOC.",
+  },
+  {
+    id: "civic-with-road-sections",
+    file: "civic-with-road-sections.xml",
+    description: "Highway-style civic with RDSEC, RDBR, RDSUBBR.",
+  },
+  {
     id: "geo-point",
     file: "geo-point.xml",
     description: "Dynamic California 2D point (gml:Point, EPSG:4326).",
@@ -69,6 +94,61 @@ export const catalog: ScenarioMeta[] = [
     id: "geo-mixed",
     file: "geo-mixed.xml",
     description: "Dynamic California civic + circle — both reflect the same picked location.",
+  },
+  {
+    id: "geo-ellipse",
+    file: "geo-ellipse.xml",
+    description: "Dynamic California 2D ellipse (gs:Ellipse with semi-axes + orientation).",
+  },
+  {
+    id: "geo-sphere",
+    file: "geo-sphere.xml",
+    description: "Dynamic California 3D sphere (gs:Sphere with radius, EPSG:4979).",
+  },
+  {
+    id: "geo-ellipsoid",
+    file: "geo-ellipsoid.xml",
+    description: "Dynamic California 3D ellipsoid (gs:Ellipsoid with 3 axes + orientation).",
+  },
+  {
+    id: "geo-prism",
+    file: "geo-prism.xml",
+    description: "Dynamic California 3D prism (gs:Prism — extruded polygon for buildings).",
+  },
+  {
+    id: "with-confidence-normal",
+    file: "with-confidence-normal.xml",
+    description: "Circle with RFC 7459 <con:confidence pdf=\"normal\">95 — statistical uncertainty.",
+  },
+  {
+    id: "with-confidence-rectangular",
+    file: "with-confidence-rectangular.xml",
+    description: "Polygon with RFC 7459 <con:confidence pdf=\"rectangular\">99 — uniform region.",
+  },
+  {
+    id: "with-confidence-unknown",
+    file: "with-confidence-unknown.xml",
+    description: "Circle with RFC 7459 <con:confidence pdf=\"unknown\">unknown — pdf+value both unknown.",
+  },
+  {
+    id: "multi-tuple",
+    file: "multi-tuple.xml",
+    description: "Presence with two <tuple> siblings — civic and geodetic separately (RFC 5491 rule #2).",
+  },
+  {
+    id: "location-by-reference",
+    file: "location-by-reference.xml",
+    description: "HELD locationUriSet only (no PIDF-LO body) — client must dereference the URI.",
+  },
+  {
+    id: "location-by-value-and-reference",
+    file: "location-by-value-and-reference.xml",
+    description: "Both PIDF-LO body and a locationUriSet — RFC 5985 §6.2 concurrent delivery.",
+  },
+  {
+    id: "multi-locationURI",
+    file: "multi-locationURI.xml",
+    description: "locationUriSet with two URIs in different schemes (HTTPS + SIP) per RFC 5985 §6.5.",
   },
   {
     id: "partial-no-timestamp",
@@ -104,6 +184,31 @@ export const catalog: ScenarioMeta[] = [
     id: "error-notLocatable",
     file: "error-notLocatable.xml",
     description: "HELD <error code=\"notLocatable\"> — known device, no location available.",
+  },
+  {
+    id: "error-requestError",
+    file: "error-requestError.xml",
+    description: "HELD <error code=\"requestError\"> — request was badly formed.",
+  },
+  {
+    id: "error-xmlError",
+    file: "error-xmlError.xml",
+    description: "HELD <error code=\"xmlError\"> — request XML was malformed or invalid.",
+  },
+  {
+    id: "error-generalLisError",
+    file: "error-generalLisError.xml",
+    description: "HELD <error code=\"generalLisError\"> — unspecified LIS error.",
+  },
+  {
+    id: "error-unsupportedMessage",
+    file: "error-unsupportedMessage.xml",
+    description: "HELD <error code=\"unsupportedMessage\"> — element not understood by the LIS.",
+  },
+  {
+    id: "error-cannotProvideLiType",
+    file: "error-cannotProvideLiType.xml",
+    description: "HELD <error code=\"cannotProvideLiType\"> — requested LI type not available.",
   },
   {
     id: "http-404",
