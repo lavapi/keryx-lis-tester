@@ -192,7 +192,70 @@ describe("geodetic scenarios (real catalog)", () => {
     });
   });
 
-  it("all six geo scenarios appear in the registry list", async () => {
+  describe("geo-ellipse", () => {
+    it("returns 200", async () => {
+      expect((await fetchScenario("geo-ellipse")).statusCode).toBe(200);
+    });
+
+    it("uses gs:Ellipse with semiMajorAxis, semiMinorAxis and orientation", async () => {
+      const body = (await fetchScenario("geo-ellipse")).body;
+      expect(body).toContain("<gs:Ellipse");
+      expect(body).toContain("<gs:semiMajorAxis");
+      expect(body).toContain("<gs:semiMinorAxis");
+      expect(body).toContain("<gs:orientation");
+      const pos = extractPos(body);
+      expect(inCalifornia(pos!.lat, pos!.lon)).toBe(true);
+    });
+  });
+
+  describe("geo-sphere", () => {
+    it("returns 200", async () => {
+      expect((await fetchScenario("geo-sphere")).statusCode).toBe(200);
+    });
+
+    it("uses gs:Sphere with a 3D point centre and gs:radius", async () => {
+      const body = (await fetchScenario("geo-sphere")).body;
+      expect(body).toContain("<gs:Sphere");
+      expect(body).toContain("<gs:radius");
+      expect(body).toMatch(/srsName="urn:ogc:def:crs:EPSG::4979"/);
+      const pos = extractPos(body);
+      expect(pos?.alt).toBeDefined();
+      expect(inCalifornia(pos!.lat, pos!.lon)).toBe(true);
+    });
+  });
+
+  describe("geo-ellipsoid", () => {
+    it("returns 200", async () => {
+      expect((await fetchScenario("geo-ellipsoid")).statusCode).toBe(200);
+    });
+
+    it("uses gs:Ellipsoid with semiMajorAxis, semiMinorAxis, verticalAxis and orientation", async () => {
+      const body = (await fetchScenario("geo-ellipsoid")).body;
+      expect(body).toContain("<gs:Ellipsoid");
+      expect(body).toContain("<gs:semiMajorAxis");
+      expect(body).toContain("<gs:semiMinorAxis");
+      expect(body).toContain("<gs:verticalAxis");
+      expect(body).toContain("<gs:orientation");
+      expect(body).toMatch(/srsName="urn:ogc:def:crs:EPSG::4979"/);
+    });
+  });
+
+  describe("geo-prism", () => {
+    it("returns 200", async () => {
+      expect((await fetchScenario("geo-prism")).statusCode).toBe(200);
+    });
+
+    it("uses gs:Prism with a polygon base and gs:height", async () => {
+      const body = (await fetchScenario("geo-prism")).body;
+      expect(body).toContain("<gs:Prism");
+      expect(body).toContain("<gs:base");
+      expect(body).toContain("<gml:Polygon");
+      expect(body).toContain("<gml:LinearRing");
+      expect(body).toContain("<gs:height");
+    });
+  });
+
+  it("all ten geo scenarios appear in the registry list", async () => {
     const r = await fetchScenario("does-not-exist");
     const payload = r.json() as { available: string[] };
     expect(payload.available).toEqual(
@@ -203,6 +266,10 @@ describe("geodetic scenarios (real catalog)", () => {
         "geo-polygon",
         "geo-arcband",
         "geo-mixed",
+        "geo-ellipse",
+        "geo-sphere",
+        "geo-ellipsoid",
+        "geo-prism",
       ]),
     );
   });

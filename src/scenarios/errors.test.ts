@@ -31,11 +31,16 @@ describe("error & edge-case scenarios (real catalog)", () => {
       payload: "<r/>",
     });
 
-  describe("HELD-level errors (RFC 5985 §6.4)", () => {
+  describe("HELD-level errors (RFC 5985 §6.3)", () => {
     const cases: { id: string; code: string }[] = [
       { id: "error-locationUnknown", code: "locationUnknown" },
       { id: "error-timeout", code: "timeout" },
       { id: "error-notLocatable", code: "notLocatable" },
+      { id: "error-requestError", code: "requestError" },
+      { id: "error-xmlError", code: "xmlError" },
+      { id: "error-generalLisError", code: "generalLisError" },
+      { id: "error-unsupportedMessage", code: "unsupportedMessage" },
+      { id: "error-cannotProvideLiType", code: "cannotProvideLiType" },
     ];
 
     for (const { id, code } of cases) {
@@ -134,6 +139,11 @@ describe("error & edge-case scenarios (real catalog)", () => {
         "error-locationUnknown",
         "error-timeout",
         "error-notLocatable",
+        "error-requestError",
+        "error-xmlError",
+        "error-generalLisError",
+        "error-unsupportedMessage",
+        "error-cannotProvideLiType",
         "http-404",
         "http-500",
         "http-503",

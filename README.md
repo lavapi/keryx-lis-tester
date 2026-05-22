@@ -5,7 +5,7 @@ impersonates a real LIS so the Call Handling app can be exercised against
 controlled location responses — well-formed civic and geodetic, partial,
 malformed, slow, oversized, and erroring — without touching production.
 
-The same endpoint serves any of 26 canned scenarios. The caller picks which
+The same endpoint serves any of 47 canned scenarios. The caller picks which
 one each request gets back by attaching a scenario id — no server-side state
 changes between tests.
 
@@ -24,7 +24,12 @@ The server listens on `http://localhost:8088` by default.
 
 ## How it works
 
-- One endpoint: `POST /` accepting `Content-Type: application/held+xml`
+- Main endpoint: `POST /` accepting `Content-Type: application/held+xml` (RFC 5985 §8)
+- `GET /` → `405 Method Not Allowed` with `Allow: POST` header
+- Dereference endpoint: `GET /locations/:token` and `POST /locations/:token` return PIDF-LO
+  (RFC 6753 — what a client uses to resolve a `<locationURI>` advertised by the
+  `location-by-reference` / `location-by-value-and-reference` / `multi-locationURI`
+  scenarios)
 - Scenario selection precedence:
   1. `X-Scenario:` request header
   2. `?scenario=` query parameter
@@ -70,6 +75,10 @@ Template variables available in scenario XML:
 | `{{name}}`         | Tenant / organisation                  |
 | `{{landmark}}`     | Nearby landmark                        |
 | `{{polygonPosList}}` | 4-corner closed ring ±0.001° around centre |
+| `{{locationToken}}` | UUID, fresh per request                |
+| `{{locationExpires}}` | ISO timestamp ~5 min from now        |
+| `{{httpsLocationURI}}` | `https://lis.keryx.example.com/locations/{token}` |
+| `{{sipLocationURI}}` | `sip:{token}@lis.keryx.example.com`    |
 
 Unknown placeholders throw at render time — typos in scenario XML fail loud.
 
@@ -108,19 +117,43 @@ curl -i -X POST http://localhost:8088/ \
 
 Run `npm run scenarios` to print the live list. By category:
 
-**Civic** — well-formed civic addresses
+**Civic** — well-formed civic addresses (dynamic California unless noted)
 - `civic-us` — standard US (HNO, RD, STS, A3, A1, PC)
-- `civic-international` — Canada (CA, ON, Toronto)
-- `civic-minimal` — country + A1 only
-- `civic-extended` — adds BLD, FLR, ROOM, SEAT, PLC, NAM, LMK, PCN, ADDCODE
+- `civic-international` — Canada (static)
+- `civic-minimal` — country + A1 only (static)
+- `civic-extended` — adds BLD, FLR, ROOM, PLC, NAM, LMK
 
-**Geodetic** — well-formed GML shapes
+**Civic field showcases** — RFC 5139 field coverage (static, real addresses)
+- `civic-with-directionals` — PRD + POD ("N Spring St SW")
+- `civic-with-hns` — house number suffix ("1234B Market St")
+- `civic-with-pobox` — POBOX instead of street
+- `civic-with-loc-unit` — UNIT + free-text LOC
+- `civic-with-road-sections` — RDSEC, RDBR, RDSUBBR (highway-style)
+
+**Geodetic** — every GML/pidflo shape (dynamic California)
 - `geo-point` — `gml:Point` 2D (EPSG:4326)
 - `geo-point-3d` — `gml:Point` 3D with altitude (EPSG:4979)
 - `geo-circle` — `gs:Circle` with metre radius
 - `geo-polygon` — `gml:Polygon` closed ring
 - `geo-arcband` — `gs:ArcBand` sector
+- `geo-ellipse` — `gs:Ellipse` (semi-axes + orientation)
+- `geo-sphere` — `gs:Sphere` (3D)
+- `geo-ellipsoid` — `gs:Ellipsoid` (3D, 3 axes + orientation)
+- `geo-prism` — `gs:Prism` (extruded polygon, models buildings)
 - `geo-mixed` — civic + geodetic in the same tuple
+
+**Confidence / uncertainty** (RFC 7459)
+- `with-confidence-normal` — Circle + `pdf="normal"` 95%
+- `with-confidence-rectangular` — Polygon + `pdf="rectangular"` 99%
+- `with-confidence-unknown` — Circle + `pdf="unknown"` value=`unknown`
+
+**Multi-tuple PIDF-LO** (RFC 5491 rule #2)
+- `multi-tuple` — `<presence>` with two `<tuple>` siblings (civic + geodetic separately)
+
+**Location by reference** (RFC 5985 §6.5)
+- `location-by-reference` — `<locationUriSet>` only, no PIDF-LO body
+- `location-by-value-and-reference` — both forms concurrently
+- `multi-locationURI` — two URIs in the set (HTTPS + SIP)
 
 **Partial / missing-field** — parser leniency
 - `partial-no-timestamp` — omits `<timestamp>`
@@ -128,10 +161,15 @@ Run `npm run scenarios` to print the live list. By category:
 - `partial-no-confidence` — no RFC 7459 `<conf:*>` elements
 - `partial-empty-location-info` — self-closing `<gp:location-info/>`
 
-**HELD-level errors** (HTTP 200, body is HELD `<error code="…">`)
+**HELD-level errors** — all 8 RFC 5985 §6.3 codes (HTTP 200 + `<error>` body)
 - `error-locationUnknown`
 - `error-timeout`
 - `error-notLocatable`
+- `error-requestError`
+- `error-xmlError`
+- `error-generalLisError`
+- `error-unsupportedMessage`
+- `error-cannotProvideLiType`
 
 **HTTP-level errors** (status code only, empty body)
 - `http-404`, `http-500`, `http-503`

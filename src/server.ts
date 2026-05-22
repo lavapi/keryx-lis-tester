@@ -1,6 +1,7 @@
 import Fastify, { type FastifyInstance } from "fastify";
 
 import type { AppConfig } from "./config.js";
+import { registerDereferenceEndpoint } from "./dereferenceEndpoint.js";
 import { registerHeldEndpoint } from "./heldEndpoint.js";
 import { catalog, scenariosDir } from "./scenarios/catalog.js";
 import { loadRegistry } from "./scenarios/registry.js";
@@ -21,6 +22,7 @@ export const buildServer = (config: AppConfig): FastifyInstance => {
     registry,
     defaultScenarioId: config.defaultScenarioId,
   });
+  registerDereferenceEndpoint(app);
 
   return app;
 };
