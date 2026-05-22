@@ -76,6 +76,7 @@ const SAMPLE_REQUEST_BODY = `<?xml version="1.0" encoding="UTF-8"?>
 
 const FOLDER_ORDER = [
   "Health",
+  "Dereference",
   "Civic",
   "Geodetic",
   "Partial / missing-field",
@@ -86,8 +87,9 @@ const FOLDER_ORDER = [
 ] as const;
 
 type FolderName = (typeof FOLDER_ORDER)[number];
+type ScenarioFolderName = Exclude<FolderName, "Health" | "Dereference">;
 
-const categorize = (id: string): Exclude<FolderName, "Health"> => {
+const categorize = (id: string): ScenarioFolderName => {
   if (id.startsWith("civic-")) return "Civic";
   if (id.startsWith("geo-")) return "Geodetic";
   if (id.startsWith("partial-")) return "Partial / missing-field";
@@ -135,6 +137,60 @@ const buildHealthRequest = (): PostmanRequest => ({
   ],
 });
 
+const DEREFERENCE_TEST_SCRIPT: PostmanEvent = {
+  listen: "test",
+  script: {
+    type: "text/javascript",
+    exec: [
+      "pm.test(\"status is 200\", () => {",
+      "  pm.expect(pm.response.code).to.equal(200);",
+      "});",
+      "pm.test(\"content-type is application/held+xml\", () => {",
+      "  pm.expect(pm.response.headers.get(\"Content-Type\")).to.match(/application\\/held\\+xml/);",
+      "});",
+    ],
+  },
+};
+
+const buildDereferenceGetRequest = (): PostmanRequest => ({
+  name: "Dereference (GET) — RFC 6753",
+  request: {
+    method: "GET",
+    header: [],
+    url: {
+      raw: "{{baseUrl}}/locations/{{$randomUUID}}",
+      host: ["{{baseUrl}}"],
+      path: ["locations", "{{$randomUUID}}"],
+    },
+    description:
+      "Dereferences a HELD locationURI. Per RFC 6753 §3.2 the LIS MUST accept GET " +
+      "and return a HELD location response (default locationType=any).",
+  },
+  event: [DEREFERENCE_TEST_SCRIPT],
+});
+
+const buildDereferencePostRequest = (): PostmanRequest => ({
+  name: "Dereference (POST) — RFC 6753",
+  request: {
+    method: "POST",
+    header: [{ key: "Content-Type", value: HELD_CONTENT_TYPE, type: "text" }],
+    url: {
+      raw: "{{baseUrl}}/locations/{{$randomUUID}}",
+      host: ["{{baseUrl}}"],
+      path: ["locations", "{{$randomUUID}}"],
+    },
+    body: {
+      mode: "raw",
+      raw: SAMPLE_REQUEST_BODY,
+      options: { raw: { language: "xml" } },
+    },
+    description:
+      "Dereferences a HELD locationURI with an explicit locationRequest body " +
+      "(RFC 6753 §3.1).",
+  },
+  event: [DEREFERENCE_TEST_SCRIPT],
+});
+
 const buildScenarioRequest = (meta: ScenarioMeta): PostmanRequest => {
   const expectedStatus = meta.status ?? 200;
   return {
@@ -172,6 +228,7 @@ const buildScenarioRequest = (meta: ScenarioMeta): PostmanRequest => {
 export const buildCollection = (catalog: ScenarioMeta[]): PostmanCollection => {
   const folders: Record<FolderName, PostmanRequest[]> = {
     Health: [buildHealthRequest()],
+    Dereference: [buildDereferenceGetRequest(), buildDereferencePostRequest()],
     Civic: [],
     Geodetic: [],
     "Partial / missing-field": [],

@@ -151,6 +151,7 @@ describe("buildCollection", () => {
     const names = c.item.map((f) => f.name);
     expect(names).toEqual([
       "Health",
+      "Dereference",
       "Civic",
       "Geodetic",
       "Partial / missing-field",
@@ -159,5 +160,41 @@ describe("buildCollection", () => {
       "Edge cases",
       "Delays",
     ]);
+  });
+
+  describe("Dereference folder (RFC 6753)", () => {
+    it("contains a GET request to /locations/:token", async () => {
+      const c = buildCollection([]);
+      const folder = findFolder(c, "Dereference");
+      expect(folder).toBeDefined();
+      const getReq = folder!.item.find((r) => r.request.method === "GET");
+      expect(getReq).toBeDefined();
+      expect(getReq?.request.url.raw).toContain("/locations/");
+    });
+
+    it("contains a POST request to /locations/:token with a held+xml body", async () => {
+      const folder = findFolder(buildCollection([]), "Dereference");
+      const postReq = folder?.item.find((r) => r.request.method === "POST");
+      expect(postReq).toBeDefined();
+      expect(postReq?.request.url.raw).toContain("/locations/");
+      const ct = postReq?.request.header.find((h) => h.key.toLowerCase() === "content-type");
+      expect(ct?.value).toBe("application/held+xml");
+      expect(postReq?.request.body?.raw).toContain("<locationRequest");
+    });
+
+    it("uses {{$randomUUID}} in the URL so each fire produces a new token", async () => {
+      const folder = findFolder(buildCollection([]), "Dereference");
+      for (const req of folder?.item ?? []) {
+        expect(req.request.url.raw).toContain("{{$randomUUID}}");
+      }
+    });
+
+    it("attaches a status-200 test script to each dereference request", async () => {
+      const folder = findFolder(buildCollection([]), "Dereference");
+      for (const req of folder?.item ?? []) {
+        const test = req.event?.find((e) => e.listen === "test");
+        expect(test?.script.exec.join("\n")).toContain("200");
+      }
+    });
   });
 });
