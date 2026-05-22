@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<locationResponse xmlns="urn:ietf:params:xml:ns:geopriv:held">
+  <presence xmlns="urn:ietf:params:xml:ns:pidf"
+            xmlns:gp="urn:ietf:params:xml:ns:pidf:geopriv10"
+            xmlns:ca="urn:ietf:params:xml:ns:pidf:geopriv10:civicAddr">
+    <tuple id="t1">
+      <status>
+        <gp:geopriv>
+          <gp:location-info>
+            <ca:civicAddress>
+              <ca:country>US</ca:country>
+              <ca:A1>NY

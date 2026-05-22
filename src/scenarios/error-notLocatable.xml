@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<error xmlns="urn:ietf:params:xml:ns:geopriv:held" code="notLocatable">
+  <message xml:lang="en">The device is registered but cannot be located at this time.</message>
+</error>

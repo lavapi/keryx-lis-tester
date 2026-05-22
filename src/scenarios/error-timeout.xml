@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<error xmlns="urn:ietf:params:xml:ns:geopriv:held" code="timeout">
+  <message xml:lang="en">Determining the location took longer than the requested responseTime.</message>
+</error>

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<error xmlns="urn:ietf:params:xml:ns:geopriv:held" code="locationUnknown">
+  <message xml:lang="en">The LIS cannot determine a location for the device.</message>
+</error>
