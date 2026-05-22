@@ -1,0 +1,1389 @@
+{
+  "info": {
+    "name": "LIS Tester",
+    "description": "Mock LIS scenarios for exercising HELD (RFC 5985) client parsing. Set `baseUrl` (collection variable) to point at the running server, then fire any request — each one selects a scenario via the X-Scenario header.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "health"
+              ]
+            },
+            "description": "Liveness probe — returns 200 with {\"status\":\"ok\"}."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status is 200\", () => {",
+                  "  pm.expect(pm.response.code).to.equal(200);",
+                  "});",
+                  "pm.test(\"body is {status: ok}\", () => {",
+                  "  pm.expect(pm.response.json()).to.eql({ status: \"ok\" });",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Civic",
+      "item": [
+        {
+          "name": "civic-us",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/held+xml",
+                "type": "text"
+              },
+              {
+                "key": "X-Scenario",
+                "value": "civic-us",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<locationRequest xmlns=\"urn:ietf:params:xml:ns:geopriv:held\">\n  <locationType exact=\"true\">geodetic civic</locationType>\n  <responseTime>emergencyRouting</responseTime>\n</locationRequest>",
+              "options": {
+                "raw": {
+                  "language": "xml"
+                }
+              }
+            },
+            "description": "Dynamic California civic address — different real CA location per request."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status is 200\", () => {",
+                  "  pm.expect(pm.response.code).to.equal(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "civic-international",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/held+xml",
+                "type": "text"
+              },
+              {
+                "key": "X-Scenario",
+                "value": "civic-international",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<locationRequest xmlns=\"urn:ietf:params:xml:ns:geopriv:held\">\n  <locationType exact=\"true\">geodetic civic</locationType>\n  <responseTime>emergencyRouting</responseTime>\n</locationRequest>",
+              "options": {
+                "raw": {
+                  "language": "xml"
+                }
+              }
+            },
+            "description": "Static non-US civic address (Canada — country, A1, A3, RD, STS, HNO, PC)."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status is 200\", () => {",
+                  "  pm.expect(pm.response.code).to.equal(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "civic-minimal",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/held+xml",
+                "type": "text"
+              },
+              {
+                "key": "X-Scenario",
+                "value": "civic-minimal",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<locationRequest xmlns=\"urn:ietf:params:xml:ns:geopriv:held\">\n  <locationType exact=\"true\">geodetic civic</locationType>\n  <responseTime>emergencyRouting</responseTime>\n</locationRequest>",
+              "options": {
+                "raw": {
+                  "language": "xml"
+                }
+              }
+            },
+            "description": "Minimal civic address — country and A1 only."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status is 200\", () => {",
+                  "  pm.expect(pm.response.code).to.equal(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "civic-extended",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/held+xml",
+                "type": "text"
+              },
+              {
+                "key": "X-Scenario",
+                "value": "civic-extended",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<locationRequest xmlns=\"urn:ietf:params:xml:ns:geopriv:held\">\n  <locationType exact=\"true\">geodetic civic</locationType>\n  <responseTime>emergencyRouting</responseTime>\n</locationRequest>",
+              "options": {
+                "raw": {
+                  "language": "xml"
+                }
+              }
+            },
+            "description": "Dynamic California civic with extended fields (BLD, FLR, ROOM, PLC, NAM, LMK)."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status is 200\", () => {",
+                  "  pm.expect(pm.response.code).to.equal(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Geodetic",
+      "item": [
+        {
+          "name": "geo-point",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/held+xml",
+                "type": "text"
+              },
+              {
+                "key": "X-Scenario",
+                "value": "geo-point",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<locationRequest xmlns=\"urn:ietf:params:xml:ns:geopriv:held\">\n  <locationType exact=\"true\">geodetic civic</locationType>\n  <responseTime>emergencyRouting</responseTime>\n</locationRequest>",
+              "options": {
+                "raw": {
+                  "language": "xml"
+                }
+              }
+            },
+            "description": "Dynamic California 2D point (gml:Point, EPSG:4326)."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status is 200\", () => {",
+                  "  pm.expect(pm.response.code).to.equal(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "geo-point-3d",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/held+xml",
+                "type": "text"
+              },
+              {
+                "key": "X-Scenario",
+                "value": "geo-point-3d",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<locationRequest xmlns=\"urn:ietf:params:xml:ns:geopriv:held\">\n  <locationType exact=\"true\">geodetic civic</locationType>\n  <responseTime>emergencyRouting</responseTime>\n</locationRequest>",
+              "options": {
+                "raw": {
+                  "language": "xml"
+                }
+              }
+            },
+            "description": "Dynamic California 3D point with altitude (gml:Point, EPSG:4979)."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status is 200\", () => {",
+                  "  pm.expect(pm.response.code).to.equal(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "geo-circle",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/held+xml",
+                "type": "text"
+              },
+              {
+                "key": "X-Scenario",
+                "value": "geo-circle",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<locationRequest xmlns=\"urn:ietf:params:xml:ns:geopriv:held\">\n  <locationType exact=\"true\">geodetic civic</locationType>\n  <responseTime>emergencyRouting</responseTime>\n</locationRequest>",
+              "options": {
+                "raw": {
+                  "language": "xml"
+                }
+              }
+            },
+            "description": "Dynamic California 50 m circle (gs:Circle)."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status is 200\", () => {",
+                  "  pm.expect(pm.response.code).to.equal(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "geo-polygon",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/held+xml",
+                "type": "text"
+              },
+              {
+                "key": "X-Scenario",
+                "value": "geo-polygon",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<locationRequest xmlns=\"urn:ietf:params:xml:ns:geopriv:held\">\n  <locationType exact=\"true\">geodetic civic</locationType>\n  <responseTime>emergencyRouting</responseTime>\n</locationRequest>",
+              "options": {
+                "raw": {
+                  "language": "xml"
+                }
+              }
+            },
+            "description": "Dynamic California ~100 m square polygon (gml:Polygon, LinearRing)."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status is 200\", () => {",
+                  "  pm.expect(pm.response.code).to.equal(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "geo-arcband",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/held+xml",
+                "type": "text"
+              },
+              {
+                "key": "X-Scenario",
+                "value": "geo-arcband",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<locationRequest xmlns=\"urn:ietf:params:xml:ns:geopriv:held\">\n  <locationType exact=\"true\">geodetic civic</locationType>\n  <responseTime>emergencyRouting</responseTime>\n</locationRequest>",
+              "options": {
+                "raw": {
+                  "language": "xml"
+                }
+              }
+            },
+            "description": "Dynamic California arc-band sector (gs:ArcBand, inner/outer radius + angles)."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status is 200\", () => {",
+                  "  pm.expect(pm.response.code).to.equal(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "geo-mixed",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/held+xml",
+                "type": "text"
+              },
+              {
+                "key": "X-Scenario",
+                "value": "geo-mixed",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<locationRequest xmlns=\"urn:ietf:params:xml:ns:geopriv:held\">\n  <locationType exact=\"true\">geodetic civic</locationType>\n  <responseTime>emergencyRouting</responseTime>\n</locationRequest>",
+              "options": {
+                "raw": {
+                  "language": "xml"
+                }
+              }
+            },
+            "description": "Dynamic California civic + circle — both reflect the same picked location."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status is 200\", () => {",
+                  "  pm.expect(pm.response.code).to.equal(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Partial / missing-field",
+      "item": [
+        {
+          "name": "partial-no-timestamp",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/held+xml",
+                "type": "text"
+              },
+              {
+                "key": "X-Scenario",
+                "value": "partial-no-timestamp",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<locationRequest xmlns=\"urn:ietf:params:xml:ns:geopriv:held\">\n  <locationType exact=\"true\">geodetic civic</locationType>\n  <responseTime>emergencyRouting</responseTime>\n</locationRequest>",
+              "options": {
+                "raw": {
+                  "language": "xml"
+                }
+              }
+            },
+            "description": "Well-formed civic PIDF-LO with the optional <timestamp> element omitted."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status is 200\", () => {",
+                  "  pm.expect(pm.response.code).to.equal(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "partial-no-method",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/held+xml",
+                "type": "text"
+              },
+              {
+                "key": "X-Scenario",
+                "value": "partial-no-method",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<locationRequest xmlns=\"urn:ietf:params:xml:ns:geopriv:held\">\n  <locationType exact=\"true\">geodetic civic</locationType>\n  <responseTime>emergencyRouting</responseTime>\n</locationRequest>",
+              "options": {
+                "raw": {
+                  "language": "xml"
+                }
+              }
+            },
+            "description": "Well-formed civic PIDF-LO with the optional <gp:method> element omitted."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status is 200\", () => {",
+                  "  pm.expect(pm.response.code).to.equal(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "partial-no-confidence",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/held+xml",
+                "type": "text"
+              },
+              {
+                "key": "X-Scenario",
+                "value": "partial-no-confidence",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<locationRequest xmlns=\"urn:ietf:params:xml:ns:geopriv:held\">\n  <locationType exact=\"true\">geodetic civic</locationType>\n  <responseTime>emergencyRouting</responseTime>\n</locationRequest>",
+              "options": {
+                "raw": {
+                  "language": "xml"
+                }
+              }
+            },
+            "description": "Geodetic Point with no RFC 7459 <conf:*> uncertainty/confidence elements."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status is 200\", () => {",
+                  "  pm.expect(pm.response.code).to.equal(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "partial-empty-location-info",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/held+xml",
+                "type": "text"
+              },
+              {
+                "key": "X-Scenario",
+                "value": "partial-empty-location-info",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<locationRequest xmlns=\"urn:ietf:params:xml:ns:geopriv:held\">\n  <locationType exact=\"true\">geodetic civic</locationType>\n  <responseTime>emergencyRouting</responseTime>\n</locationRequest>",
+              "options": {
+                "raw": {
+                  "language": "xml"
+                }
+              }
+            },
+            "description": "PIDF-LO with a self-closing, empty <gp:location-info/> element."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status is 200\", () => {",
+                  "  pm.expect(pm.response.code).to.equal(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "HELD errors",
+      "item": [
+        {
+          "name": "error-locationUnknown",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/held+xml",
+                "type": "text"
+              },
+              {
+                "key": "X-Scenario",
+                "value": "error-locationUnknown",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<locationRequest xmlns=\"urn:ietf:params:xml:ns:geopriv:held\">\n  <locationType exact=\"true\">geodetic civic</locationType>\n  <responseTime>emergencyRouting</responseTime>\n</locationRequest>",
+              "options": {
+                "raw": {
+                  "language": "xml"
+                }
+              }
+            },
+            "description": "HELD <error code=\"locationUnknown\"> (RFC 5985 §6.4)."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status is 200\", () => {",
+                  "  pm.expect(pm.response.code).to.equal(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "error-timeout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/held+xml",
+                "type": "text"
+              },
+              {
+                "key": "X-Scenario",
+                "value": "error-timeout",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<locationRequest xmlns=\"urn:ietf:params:xml:ns:geopriv:held\">\n  <locationType exact=\"true\">geodetic civic</locationType>\n  <responseTime>emergencyRouting</responseTime>\n</locationRequest>",
+              "options": {
+                "raw": {
+                  "language": "xml"
+                }
+              }
+            },
+            "description": "HELD <error code=\"timeout\"> — exceeded responseTime budget."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status is 200\", () => {",
+                  "  pm.expect(pm.response.code).to.equal(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "error-notLocatable",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/held+xml",
+                "type": "text"
+              },
+              {
+                "key": "X-Scenario",
+                "value": "error-notLocatable",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<locationRequest xmlns=\"urn:ietf:params:xml:ns:geopriv:held\">\n  <locationType exact=\"true\">geodetic civic</locationType>\n  <responseTime>emergencyRouting</responseTime>\n</locationRequest>",
+              "options": {
+                "raw": {
+                  "language": "xml"
+                }
+              }
+            },
+            "description": "HELD <error code=\"notLocatable\"> — known device, no location available."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status is 200\", () => {",
+                  "  pm.expect(pm.response.code).to.equal(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "HTTP errors",
+      "item": [
+        {
+          "name": "http-404",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/held+xml",
+                "type": "text"
+              },
+              {
+                "key": "X-Scenario",
+                "value": "http-404",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<locationRequest xmlns=\"urn:ietf:params:xml:ns:geopriv:held\">\n  <locationType exact=\"true\">geodetic civic</locationType>\n  <responseTime>emergencyRouting</responseTime>\n</locationRequest>",
+              "options": {
+                "raw": {
+                  "language": "xml"
+                }
+              }
+            },
+            "description": "HTTP 404 Not Found, empty body."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status is 404\", () => {",
+                  "  pm.expect(pm.response.code).to.equal(404);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "http-500",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/held+xml",
+                "type": "text"
+              },
+              {
+                "key": "X-Scenario",
+                "value": "http-500",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<locationRequest xmlns=\"urn:ietf:params:xml:ns:geopriv:held\">\n  <locationType exact=\"true\">geodetic civic</locationType>\n  <responseTime>emergencyRouting</responseTime>\n</locationRequest>",
+              "options": {
+                "raw": {
+                  "language": "xml"
+                }
+              }
+            },
+            "description": "HTTP 500 Internal Server Error, empty body."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status is 500\", () => {",
+                  "  pm.expect(pm.response.code).to.equal(500);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "http-503",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/held+xml",
+                "type": "text"
+              },
+              {
+                "key": "X-Scenario",
+                "value": "http-503",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<locationRequest xmlns=\"urn:ietf:params:xml:ns:geopriv:held\">\n  <locationType exact=\"true\">geodetic civic</locationType>\n  <responseTime>emergencyRouting</responseTime>\n</locationRequest>",
+              "options": {
+                "raw": {
+                  "language": "xml"
+                }
+              }
+            },
+            "description": "HTTP 503 Service Unavailable, empty body."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status is 503\", () => {",
+                  "  pm.expect(pm.response.code).to.equal(503);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Edge cases",
+      "item": [
+        {
+          "name": "empty-body",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/held+xml",
+                "type": "text"
+              },
+              {
+                "key": "X-Scenario",
+                "value": "empty-body",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<locationRequest xmlns=\"urn:ietf:params:xml:ns:geopriv:held\">\n  <locationType exact=\"true\">geodetic civic</locationType>\n  <responseTime>emergencyRouting</responseTime>\n</locationRequest>",
+              "options": {
+                "raw": {
+                  "language": "xml"
+                }
+              }
+            },
+            "description": "HTTP 200 with held+xml content-type but zero-byte body."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status is 200\", () => {",
+                  "  pm.expect(pm.response.code).to.equal(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "wrong-content-type",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/held+xml",
+                "type": "text"
+              },
+              {
+                "key": "X-Scenario",
+                "value": "wrong-content-type",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<locationRequest xmlns=\"urn:ietf:params:xml:ns:geopriv:held\">\n  <locationType exact=\"true\">geodetic civic</locationType>\n  <responseTime>emergencyRouting</responseTime>\n</locationRequest>",
+              "options": {
+                "raw": {
+                  "language": "xml"
+                }
+              }
+            },
+            "description": "Valid HELD body served as text/plain — stresses parsers that key off Content-Type."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status is 200\", () => {",
+                  "  pm.expect(pm.response.code).to.equal(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "malformed-xml",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/held+xml",
+                "type": "text"
+              },
+              {
+                "key": "X-Scenario",
+                "value": "malformed-xml",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<locationRequest xmlns=\"urn:ietf:params:xml:ns:geopriv:held\">\n  <locationType exact=\"true\">geodetic civic</locationType>\n  <responseTime>emergencyRouting</responseTime>\n</locationRequest>",
+              "options": {
+                "raw": {
+                  "language": "xml"
+                }
+              }
+            },
+            "description": "Truncated, unbalanced XML body — exercises parser error handling."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status is 200\", () => {",
+                  "  pm.expect(pm.response.code).to.equal(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "oversized",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/held+xml",
+                "type": "text"
+              },
+              {
+                "key": "X-Scenario",
+                "value": "oversized",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<locationRequest xmlns=\"urn:ietf:params:xml:ns:geopriv:held\">\n  <locationType exact=\"true\">geodetic civic</locationType>\n  <responseTime>emergencyRouting</responseTime>\n</locationRequest>",
+              "options": {
+                "raw": {
+                  "language": "xml"
+                }
+              }
+            },
+            "description": "Large padded HELD response (~256 KB by default; OVERSIZED_KB env override)."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status is 200\", () => {",
+                  "  pm.expect(pm.response.code).to.equal(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Delays",
+      "item": [
+        {
+          "name": "slow-2s",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/held+xml",
+                "type": "text"
+              },
+              {
+                "key": "X-Scenario",
+                "value": "slow-2s",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<locationRequest xmlns=\"urn:ietf:params:xml:ns:geopriv:held\">\n  <locationType exact=\"true\">geodetic civic</locationType>\n  <responseTime>emergencyRouting</responseTime>\n</locationRequest>",
+              "options": {
+                "raw": {
+                  "language": "xml"
+                }
+              }
+            },
+            "description": "Civic-US body delayed by 2 seconds."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status is 200\", () => {",
+                  "  pm.expect(pm.response.code).to.equal(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "slow-10s",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/held+xml",
+                "type": "text"
+              },
+              {
+                "key": "X-Scenario",
+                "value": "slow-10s",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<locationRequest xmlns=\"urn:ietf:params:xml:ns:geopriv:held\">\n  <locationType exact=\"true\">geodetic civic</locationType>\n  <responseTime>emergencyRouting</responseTime>\n</locationRequest>",
+              "options": {
+                "raw": {
+                  "language": "xml"
+                }
+              }
+            },
+            "description": "Civic-US body delayed by 10 seconds."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status is 200\", () => {",
+                  "  pm.expect(pm.response.code).to.equal(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8088",
+      "type": "string"
+    }
+  ]
+}

@@ -162,6 +162,29 @@ curl http://localhost:8088/health
 # {"status":"ok"}
 ```
 
+## Postman collection
+
+A ready-to-import Postman v2.1 collection lives in [`postman/`](postman/):
+
+- `postman/keryx-lis-tester.postman_collection.json` — every scenario as its
+  own request, grouped into folders (Health, Civic, Geodetic, Partial /
+  missing-field, HELD errors, HTTP errors, Edge cases, Delays). Each request
+  is pre-configured with the right `Content-Type` and `X-Scenario` headers,
+  a sample HELD `locationRequest` body, and a test script that asserts the
+  expected status code.
+- `postman/keryx-lis-tester.postman_environment.json` — environment with
+  `baseUrl` set to `http://localhost:8088`.
+
+Import both into Postman (File → Import). Then select the "LIS Tester —
+local" environment and start firing requests.
+
+The collection is **generated from the catalog**, so when scenarios are
+added or removed the files stay in sync:
+
+```bash
+npm run postman
+```
+
 ## Development
 
 ```bash
@@ -172,6 +195,7 @@ npm run typecheck    # tsc --noEmit
 npm run check        # typecheck + test
 npm run coverage     # vitest with v8 coverage
 npm run scenarios    # print the catalog
+npm run postman      # regenerate the Postman collection + environment
 ```
 
 ## Project layout
